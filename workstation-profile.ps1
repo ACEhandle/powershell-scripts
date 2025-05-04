@@ -1,5 +1,23 @@
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\clean-detailed.omp.json" | Invoke-Expression
 
+function Dedup-EnvVar {
+    param(
+        [string]$Name = 'Path',
+        [ValidateSet('User', 'Machine', 'Process')]
+        [string]$Scope = 'User'
+    )
+    $target = [System.EnvironmentVariableTarget]::$Scope
+    $value = [System.Environment]::GetEnvironmentVariable($Name, $target)
+    if (-not $value) {
+        Write-Host "$Name is empty or not set in $Scope scope."
+        return
+    }
+    $sep = if ($Name -ieq 'Path') { ';' } else { ':' }
+    $deduped = ($value -split [Regex]::Escape($sep) | Where-Object { $_ -ne '' } | Select-Object -Unique) -join $sep
+    [System.Environment]::SetEnvironmentVariable($Name, $deduped, $target)
+    Write-Host "$Name de-duplicated in $Scope scope."
+}
+
 function Upgrade {
     python "d:\quarry\code\projects\ACEhandle\powershell-workstation\upgrade_powershell.py"
 }
@@ -100,4 +118,11 @@ function Remove-Path {
         [System.Environment]::SetEnvironmentVariable('Path', ($newUserPath -join ";"), [System.EnvironmentVariableTarget]::User)
         Write-Host "Path '$path' removed from user Path."
     }
+}
+
+# De-duplicate user Path always
+Dedup-EnvVar
+# If running as admin, also de-duplicate machine Path
+if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Dedup-EnvVar -Scope Machine
 }
