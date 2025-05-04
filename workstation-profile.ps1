@@ -125,7 +125,7 @@ function ginit {
         [Parameter(Mandatory=$true, Position=0)]
         [string]$repoName
     )
-    & "$PSScriptRoot\local-git-init.ps1" $repoName
+    & "D:\quarry\code\projects\ACEhandle\powershell-workstation\local-git-init.ps1" $repoName
 }
 
 # De-duplicate user Path always
