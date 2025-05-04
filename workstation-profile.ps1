@@ -120,6 +120,14 @@ function Remove-Path {
     }
 }
 
+function ginit {
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
+        [string]$repoName
+    )
+    & "$PSScriptRoot\local-git-init.ps1" $repoName
+}
+
 # De-duplicate user Path always
 Dedup-EnvVar
 # If running as admin, also de-duplicate machine Path

@@ -1,5 +1,8 @@
-# Define the repository name (replace with your actual repo name)
-$repoName = "YourRepoName"  # Replace with your actual repository name
+param(
+    [Parameter(Mandatory=$true, Position=0)]
+    [string]$repoName
+)
+
 $githubUrl = "git@github-ace:ACEhandle/$repoName.git"  # Replace with your GitHub username and repo name
 
 # Initialize the local Git repository
