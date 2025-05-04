@@ -17,7 +17,7 @@ function Dedup-EnvVar {
     [System.Environment]::SetEnvironmentVariable($Name, $deduped, $target)
     Write-Host "$Name de-duplicated in $Scope scope."
 }
-
+#change this path for smooth powershell upgrade if necessary
 function Upgrade {
     python "d:\quarry\code\projects\ACEhandle\powershell-workstation\upgrade_powershell.py"
 }
